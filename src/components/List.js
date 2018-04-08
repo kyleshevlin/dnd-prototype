@@ -1,53 +1,53 @@
-import React, { Component } from 'react';
-import Package from './Package';
+import React, { Component } from 'react'
+import PackageContainer from './PackageContainer'
 
 class List extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       items: props.items
-    };
+    }
 
-    this.moveItem = this.moveItem.bind(this);
+    this.moveItem = this.moveItem.bind(this)
   }
 
   moveItem(dragIndex, hoverIndex) {
-    const { items } = this.state;
-    const dragItem = items[dragIndex];
-    const hoverItem = items[hoverIndex];
+    const { items } = this.state
+    const dragItem = items[dragIndex]
+    const hoverItem = items[hoverIndex]
 
     this.setState({
       items: items.map((item, index) => {
         switch (index) {
           case dragIndex:
-            return hoverItem;
+            return hoverItem
 
           case hoverIndex:
-            return dragItem;
+            return dragItem
 
           default:
-            return item;
+            return item
         }
       })
-    });
+    })
   }
 
   render() {
     return (
-      <div>
+      <div style={{ width: '50%' }}>
         <h1>List</h1>
         {this.state.items.map((pkg, index) => (
-          <Package
+          <PackageContainer
             key={pkg.name}
             index={index}
-            moveItem={this.moveItem}
+            moveItemInList={this.moveItem}
             {...pkg}
           />
         ))}
       </div>
-    );
+    )
   }
 }
 
-export default List;
+export default List

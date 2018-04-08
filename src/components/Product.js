@@ -1,75 +1,83 @@
-import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
-import { DragSource, DropTarget } from 'react-dnd';
-import { DTypes } from '../constants';
+import React, { Component } from 'react'
+import { findDOMNode } from 'react-dom'
+import { DragSource, DropTarget } from 'react-dnd'
+import { DTypes } from '../constants'
 
 const target = {
   hover(props, monitor, component) {
-    const monitorItem = monitor.getItem();
+    const monitorItem = monitor.getItem()
 
-    if (!props.fromThis(monitorItem.id)) {
-      return;
+    if (!props.fromThisPackage(monitorItem.id)) {
+      return
     }
 
-    const dragIndex = monitorItem.index;
-    const hoverIndex = props.index;
+    const dragIndex = monitorItem.index
+    const hoverIndex = props.index
 
     // Don't replace item with itself
     if (dragIndex === hoverIndex) {
-      return;
+      return
     }
 
     // Get rectangle on screen
-    const hoverRect = findDOMNode(component).getBoundingClientRect();
+    const hoverRect = findDOMNode(
+      component
+    ).getBoundingClientRect()
 
     // Get vertical middle
-    const hoverMidY = (hoverRect.bottom - hoverRect.top) / 2;
+    const hoverMidY = (hoverRect.bottom - hoverRect.top) / 2
 
     // Get mouse position
-    const clientOffset = monitor.getClientOffset();
+    const clientOffset = monitor.getClientOffset()
 
     // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverRect.top;
+    const hoverClientY = clientOffset.y - hoverRect.top
 
     // Only perform the move when the mouse has crossed half of the item's height
     // When dragging downwards, only move when the cursor is below 50%
     // When dragging upwards, only move when the cursor is above 50%
 
     // Downwards
-    if (dragIndex < hoverIndex && hoverClientY < hoverMidY) {
-      return;
+    if (
+      dragIndex < hoverIndex &&
+      hoverClientY < hoverMidY
+    ) {
+      return
     }
 
     // Upwards
-    if (dragIndex > hoverIndex && hoverClientY > hoverMidY) {
-      return;
+    if (
+      dragIndex > hoverIndex &&
+      hoverClientY > hoverMidY
+    ) {
+      return
     }
 
     // We good to go from here
-    props.moveItem(dragIndex, hoverIndex);
+    props.moveItemInPackage(dragIndex, hoverIndex)
 
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
-    monitorItem.index = hoverIndex;
+    monitorItem.index = hoverIndex
   }
-};
+}
 
 const targetCollect = connect => ({
   connectDropTarget: connect.dropTarget()
-});
+})
 
 const source = {
   beginDrag(props) {
-    return Object.assign({}, props);
+    return Object.assign({}, props)
   }
-};
+}
 
 const sourceCollect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
-});
+})
 
 class Product extends Component {
   render() {
@@ -78,7 +86,7 @@ class Product extends Component {
       connectDropTarget,
       isDragging,
       name
-    } = this.props;
+    } = this.props
 
     return connectDropTarget(
       connectDragSource(
@@ -93,10 +101,14 @@ class Product extends Component {
           {name}
         </div>
       )
-    );
+    )
   }
 }
 
-export default DropTarget(DTypes.PRODUCT, target, targetCollect)(
+export default DropTarget(
+  DTypes.PRODUCT,
+  target,
+  targetCollect
+)(
   DragSource(DTypes.PRODUCT, source, sourceCollect)(Product)
-);
+)
