@@ -1,21 +1,19 @@
-import React, { Component } from 'react'
-import { DragSource } from 'react-dnd'
-import { DTypes } from '../constants'
+import React, { Component } from 'react';
 
 const source = {
   beginDrag(props) {
-    return Object.assign({}, props)
+    return Object.assign({}, props);
   }
-}
+};
 
 const collect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
-})
+});
 
-class OtherListItem extends Component {
+class Item extends Component {
   render() {
-    const { connectDragSource, isDragging } = this.props
+    const { connectDragSource, isDragging } = this.props;
 
     return connectDragSource(
       <li
@@ -28,10 +26,8 @@ class OtherListItem extends Component {
       >
         {this.props.name}
       </li>
-    )
+    );
   }
 }
 
-export default DragSource(DTypes.PRODUCT, source, collect)(
-  OtherListItem
-)
+export default Item;
