@@ -1,39 +1,41 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import Wrap from './components/Wrap'
+import Container from './components/Container'
 import List from './components/List'
 import OtherList from './components/OtherList'
 
 const package1 = {
   name: 'Package 1',
+  type: 'package',
   items: [
-    { id: 1, name: 'Product 1' },
-    { id: 2, name: 'Product 2' },
-    { id: 3, name: 'Product 3' },
-    { id: 4, name: 'Product 4' }
+    { id: 1, name: 'Product 1', type: 'product' },
+    { id: 2, name: 'Product 2', type: 'product' },
+    { id: 3, name: 'Product 3', type: 'product' },
+    { id: 4, name: 'Product 4', type: 'product' }
   ]
 }
 
 const package2 = {
   name: 'Package 2',
+  type: 'package',
   items: [
-    { id: 5, name: 'Product 5' },
-    { id: 6, name: 'Product 6' },
-    { id: 7, name: 'Product 7' }
+    { id: 5, name: 'Option 1', type: 'option' },
+    { id: 6, name: 'Option 2', type: 'option' },
+    { id: 7, name: 'Option 3', type: 'option' }
   ]
 }
 
 const otherListItems = [
-  { id: 8, name: 'Other Product 1' },
-  { id: 9, name: 'Other Product 2' },
-  { id: 10, name: 'Other Product 3' },
-  { id: 11, name: 'Other Product 4' }
+  { id: 8, name: 'Product', type: 'product' },
+  { id: 9, name: 'Option', type: 'option' },
+  { id: 10, name: 'Package', type: 'package' }
 ]
 
 const App = () => (
   <div>
     <Wrap>
-      <List items={[package1, package2]} />
+      <Container items={[]} />
       <OtherList items={otherListItems} />
     </Wrap>
   </div>

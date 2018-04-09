@@ -1,50 +1,39 @@
 import React, { Component } from 'react'
-import PackageContainer from './PackageContainer'
+// import PackageContainer from './PackageContainer'
+import Package from './Package'
+import Product from './Product'
 
 class List extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
 
-    this.state = {
-      items: props.items
-    }
-
-    this.moveItem = this.moveItem.bind(this)
+    this.getItemComponent = this.getItemComponent.bind(this)
   }
 
-  moveItem(dragIndex, hoverIndex) {
-    const { items } = this.state
-    const dragItem = items[dragIndex]
-    const hoverItem = items[hoverIndex]
+  getItemComponent(item) {
+    switch (item.type) {
+      case 'product':
+        return Product
 
-    this.setState({
-      items: items.map((item, index) => {
-        switch (index) {
-          case dragIndex:
-            return hoverItem
+      case 'option':
+        return 'OPTION'
 
-          case hoverIndex:
-            return dragItem
+      case 'package':
+        return Package
 
-          default:
-            return item
-        }
-      })
-    })
+      default:
+        return null
+    }
   }
 
   render() {
     return (
       <div style={{ width: '50%' }}>
         <h1>List</h1>
-        {this.state.items.map((pkg, index) => (
-          <PackageContainer
-            key={pkg.name}
-            index={index}
-            moveItemInList={this.moveItem}
-            {...pkg}
-          />
-        ))}
+        {this.props.items.map((item, index) => {
+          const Comp = this.getItemComponent(item)
+          return <Comp key={index} {...item} />
+        })}
       </div>
     )
   }
