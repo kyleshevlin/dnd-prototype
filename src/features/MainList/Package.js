@@ -1,8 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DragSource } from 'react-dnd';
+import { DragSource, DropTarget } from 'react-dnd';
 import { DTypes } from '../../constants';
-import { getItemComponent } from '../../utils';
+import { pipe } from '../../utils';
+import Option from './Option';
+import Product from './Product';
+
+const getItemComponent = item => {
+  switch (item.type) {
+    case 'option':
+      return Option;
+
+    case 'package':
+      return Package;
+
+    case 'product':
+      return Product;
+
+    default:
+      return null;
+  }
+};
 
 const source = {
   beginDrag(props) {
@@ -17,15 +35,22 @@ const source = {
   }
 };
 
-const collect = (connect, monitor) => ({
+const sourceCollect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
+});
+
+const target = {};
+
+const targetCollect = connect => ({
+  connectDropTarget: connect.dropTarget()
 });
 
 class Package extends Component {
   render() {
     const {
       connectDragSource,
+      connectDropTarget,
       id,
       isDragging,
       items,
@@ -34,7 +59,9 @@ class Package extends Component {
       name
     } = this.props;
 
-    return connectDragSource(
+    const enhance = pipe(connectDropTarget, connectDragSource);
+
+    return enhance(
       <div
         style={{
           backgroundColor: '#eee',
@@ -73,6 +100,7 @@ class Package extends Component {
 
 Package.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   isDragging: PropTypes.bool.isRequired,
@@ -83,4 +111,13 @@ Package.propTypes = {
   type: PropTypes.string.isRequired
 };
 
-export default DragSource(DTypes.PACKAGE, source, collect)(Package);
+const enhance = pipe(
+  DragSource(DTypes.PACKAGE, source, sourceCollect),
+  DropTarget(
+    [DTypes.OPTION, DTypes.PACKAGE, DTypes.PRODUCT],
+    target,
+    targetCollect
+  )
+);
+
+export default enhance(Package);
