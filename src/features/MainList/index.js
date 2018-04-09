@@ -43,12 +43,7 @@ class MainList extends Component {
   }
 
   removeItem(id) {
-    const { items } = this.state;
-    const index = items.findIndex(item => item.id === id);
-
-    this.setState({
-      items: [...items.slice(0, index), ...items.slice(index + 1)]
-    });
+    // Logic to remove item here
   }
 
   render() {

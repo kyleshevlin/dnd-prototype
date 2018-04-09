@@ -4,7 +4,7 @@ import { getItemComponent } from '../../utils';
 
 class List extends Component {
   render() {
-    const { items, moveItem } = this.props;
+    const { items, moveItem, removeItem } = this.props;
 
     return (
       <div style={{ width: '50%' }}>
@@ -12,7 +12,14 @@ class List extends Component {
         {items.map(item => {
           const Comp = getItemComponent(item);
 
-          return <Comp key={item.id} {...item} moveItem={moveItem} />;
+          return (
+            <Comp
+              key={item.id}
+              moveItem={moveItem}
+              removeItem={removeItem}
+              {...item}
+            />
+          );
         })}
       </div>
     );

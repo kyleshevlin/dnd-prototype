@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class Product extends Component {
   render() {
-    const { name } = this.props;
+    const { id, name, removeItem } = this.props;
 
     return (
       <div
@@ -14,6 +14,13 @@ class Product extends Component {
         }}
       >
         {name}
+        <button
+          onClick={() => {
+            removeItem(id);
+          }}
+        >
+          Delete
+        </button>
       </div>
     );
   }
@@ -23,6 +30,7 @@ Product.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   moveItem: PropTypes.func.isRequired,
+  removeItem: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired
 };
 
