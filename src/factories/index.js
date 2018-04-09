@@ -16,7 +16,13 @@ export const optionFactory = () => ({
 const itemsGenerator = () =>
   Array(Math.ceil(Math.random() * 6))
     .fill()
-    .map(() => (Math.random() > 0.5 ? productFactory() : optionFactory()));
+    .map(() => {
+      const randomNumber = Math.random();
+
+      return randomNumber > 0.9
+        ? packageFactory()
+        : randomNumber > 0.4 ? productFactory() : optionFactory();
+    });
 
 export const packageFactory = () => ({
   id: shortid.generate(),
