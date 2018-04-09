@@ -43,7 +43,28 @@ class MainList extends Component {
   }
 
   removeItem(id) {
-    // Logic to remove item here
+    const deepFilter = id => items => {
+      const filtered = items.filter(x => x.id !== id);
+
+      if (filtered.length !== items.length) {
+        return filtered;
+      }
+
+      // otherwise, attempt to go one level deeper
+      return items.map(item => {
+        if (item.items) {
+          item.items = deepFilter(id)(item.items);
+        }
+
+        return item;
+      });
+    };
+
+    const filteredItems = deepFilter(id)(this.state.items);
+
+    console.log(filteredItems);
+
+    this.setState({ items: filteredItems });
   }
 
   render() {
