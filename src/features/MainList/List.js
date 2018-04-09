@@ -9,13 +9,15 @@ class List extends Component {
     return (
       <div style={{ width: '50%' }}>
         <h1>List</h1>
-        {items.map(item => {
+        {items.map((item, index) => {
           const Comp = getItemComponent(item);
 
           return (
             <Comp
               key={item.id}
+              index={index}
               moveItem={moveItem}
+              parent="root"
               removeItem={removeItem}
               {...item}
             />
