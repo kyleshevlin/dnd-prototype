@@ -15,17 +15,13 @@ const items = Array(Math.ceil(Math.random() * 6))
       : randomNumber > 0.33 ? productFactory() : optionFactory();
   });
 
-const otherListItems = [
-  { id: 8, name: 'Product', type: 'product' },
-  { id: 9, name: 'Option', type: 'option' },
-  { id: 10, name: 'Package', type: 'package' }
-];
+const otherListItems = [optionFactory(), packageFactory(), productFactory()];
 
 const App = () => (
   <div>
     <Wrap>
       <MainList items={items} />
-      {/* <OtherList items={otherListItems} /> */}
+      <OtherList items={otherListItems} />
     </Wrap>
   </div>
 );

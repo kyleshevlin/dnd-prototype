@@ -5,16 +5,17 @@ import { DTypes } from '../../constants';
 import Option from './Option';
 import Package from './Package';
 import Product from './Product';
+import { sharedHover } from './sharedDnd';
 
 const getItemComponent = item => {
   switch (item.type) {
-    case 'option':
+    case DTypes.OPTION:
       return Option;
 
-    case 'package':
+    case DTypes.PACKAGE:
       return Package;
 
-    case 'product':
+    case DTypes.PRODUCT:
       return Product;
 
     default:
@@ -22,18 +23,34 @@ const getItemComponent = item => {
   }
 };
 
-const target = {};
+const target = {
+  hover(props, monitor) {
+    sharedHover(props, monitor);
+  }
+};
 
-const collect = connect => ({
-  connectDropTarget: connect.dropTarget()
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver({ shallow: true })
 });
 
 class List extends Component {
   render() {
-    const { connectDropTarget, items, moveItem, removeItem } = this.props;
+    const {
+      connectDropTarget,
+      isOver,
+      items,
+      moveItem,
+      removeItem
+    } = this.props;
 
     return connectDropTarget(
-      <div style={{ width: '50%' }}>
+      <div
+        style={{
+          backgroundColor: isOver ? 'rgba(0, 255, 255, 0.2)' : 'white',
+          width: '50%'
+        }}
+      >
         <h1>List</h1>
         {items.map((item, index) => {
           const Comp = getItemComponent(item);
@@ -57,6 +74,7 @@ class List extends Component {
 List.propTypes = {
   addItem: PropTypes.func.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
+  isOver: PropTypes.bool.isRequired,
   items: PropTypes.array.isRequired,
   moveItem: PropTypes.func.isRequired,
   removeItem: PropTypes.func.isRequired

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragSource, DropTarget } from 'react-dnd';
+import { sharedHover } from './sharedDnd';
 import { DTypes } from '../../constants';
 import { pipe } from '../../utils';
 import Option from './Option';
@@ -8,13 +9,13 @@ import Product from './Product';
 
 const getItemComponent = item => {
   switch (item.type) {
-    case 'option':
+    case DTypes.OPTION:
       return Option;
 
-    case 'package':
+    case DTypes.PACKAGE:
       return Package;
 
-    case 'product':
+    case DTypes.PRODUCT:
       return Product;
 
     default:
@@ -40,10 +41,15 @@ const sourceCollect = (connect, monitor) => ({
   isDragging: monitor.isDragging()
 });
 
-const target = {};
+const target = {
+  hover(props, monitor) {
+    sharedHover(props, monitor);
+  }
+};
 
-const targetCollect = connect => ({
-  connectDropTarget: connect.dropTarget()
+const targetCollect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
 });
 
 class Package extends Component {
@@ -53,6 +59,7 @@ class Package extends Component {
       connectDropTarget,
       id,
       isDragging,
+      isOver,
       items,
       moveItem,
       removeItem,
@@ -64,9 +71,9 @@ class Package extends Component {
     return enhance(
       <div
         style={{
-          backgroundColor: '#eee',
+          backgroundColor: isOver ? 'rgba(0, 255, 0, 0.2)' : '#eee',
           cursor: 'move',
-          margin: '.5em .25em',
+          margin: '.75em',
           opacity: isDragging ? 0.5 : 1,
           padding: '1em'
         }}
@@ -104,6 +111,7 @@ Package.propTypes = {
   id: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   isDragging: PropTypes.bool.isRequired,
+  isOver: PropTypes.bool.isRequired,
   moveItem: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   parent: PropTypes.string.isRequired,

@@ -1,16 +1,17 @@
 import shortid from 'shortid';
 import faker from 'faker';
+import { DTypes } from '../constants';
 
 export const productFactory = () => ({
   id: shortid.generate(),
   name: faker.commerce.productName(),
-  type: 'product'
+  type: DTypes.PRODUCT
 });
 
 export const optionFactory = () => ({
   id: shortid.generate(),
   name: faker.commerce.productAdjective(),
-  type: 'option'
+  type: DTypes.OPTION
 });
 
 const itemsGenerator = () =>
@@ -28,5 +29,5 @@ export const packageFactory = () => ({
   id: shortid.generate(),
   items: itemsGenerator(),
   name: faker.commerce.productName(),
-  type: 'package'
+  type: DTypes.PACKAGE
 });

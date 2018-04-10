@@ -1,5 +1,6 @@
 export const DTypes = {
-  OPTION: 'option',
-  PACKAGE: 'package',
-  PRODUCT: 'product'
+  OPTION: 'OPTION',
+  PACKAGE: 'PACKAGE',
+  PRODUCT: 'PRODUCT',
+  SIDELIST_ITEM: 'SIDELIST_ITEM'
 };
