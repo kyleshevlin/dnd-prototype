@@ -62,8 +62,6 @@ class MainList extends Component {
 
     const filteredItems = deepFilter(id)(this.state.items);
 
-    console.log(filteredItems);
-
     this.setState({ items: filteredItems });
   }
 

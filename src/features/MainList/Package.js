@@ -12,9 +12,6 @@ const getItemComponent = item => {
     case DTypes.OPTION:
       return Option;
 
-    case DTypes.PACKAGE:
-      return Package;
-
     case DTypes.PRODUCT:
       return Product;
 
@@ -42,6 +39,11 @@ const sourceCollect = (connect, monitor) => ({
 });
 
 const target = {
+  drop(props, monitor) {
+    console.log(props.id);
+    console.log(monitor.getItem());
+  },
+
   hover(props, monitor) {
     sharedHover(props, monitor);
   }
@@ -49,10 +51,17 @@ const target = {
 
 const targetCollect = (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver()
+  isOver: monitor.isOver(),
+  isOverCurrent: monitor.isOver({ shallow: true })
 });
 
 class Package extends Component {
+  constructor() {
+    super();
+
+    this.renderList = this.renderList.bind(this);
+  }
+
   render() {
     const {
       connectDragSource,
@@ -60,6 +69,7 @@ class Package extends Component {
       id,
       isDragging,
       isOver,
+      isOverCurrent,
       items,
       moveItem,
       removeItem,
@@ -71,7 +81,7 @@ class Package extends Component {
     return enhance(
       <div
         style={{
-          backgroundColor: isOver ? 'rgba(0, 255, 0, 0.2)' : '#eee',
+          backgroundColor: isOverCurrent ? 'rgba(0, 255, 0, 0.2)' : '#eee',
           cursor: 'move',
           margin: '.75em',
           opacity: isDragging ? 0.5 : 1,
@@ -86,22 +96,28 @@ class Package extends Component {
         >
           Delete
         </button>
-        {items.map((item, index) => {
-          const Comp = getItemComponent(item);
-
-          return (
-            <Comp
-              index={index}
-              key={item.id}
-              moveItem={moveItem}
-              parent={id}
-              removeItem={removeItem}
-              {...item}
-            />
-          );
-        })}
+        {this.renderList()}
       </div>
     );
+  }
+
+  renderList() {
+    const { id, items, moveItem, removeItem } = this.props;
+
+    return items.map((item, index) => {
+      const Comp = getItemComponent(item);
+
+      return (
+        <Comp
+          index={index}
+          key={item.id}
+          moveItem={moveItem}
+          parent={id}
+          removeItem={removeItem}
+          {...item}
+        />
+      );
+    });
   }
 }
 
@@ -112,6 +128,7 @@ Package.propTypes = {
   index: PropTypes.number.isRequired,
   isDragging: PropTypes.bool.isRequired,
   isOver: PropTypes.bool.isRequired,
+  isOverCurrent: PropTypes.bool.isRequired,
   moveItem: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   parent: PropTypes.string.isRequired,
@@ -122,7 +139,7 @@ Package.propTypes = {
 const enhance = pipe(
   DragSource(DTypes.PACKAGE, source, sourceCollect),
   DropTarget(
-    [DTypes.OPTION, DTypes.PACKAGE, DTypes.PRODUCT],
+    [DTypes.OPTION, DTypes.PRODUCT, DTypes.SIDELIST_ITEM],
     target,
     targetCollect
   )

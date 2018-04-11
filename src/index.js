@@ -7,15 +7,9 @@ import { optionFactory, packageFactory, productFactory } from './factories';
 
 const items = Array(Math.ceil(Math.random() * 6))
   .fill()
-  .map(() => {
-    const randomNumber = Math.random();
+  .map(() => (Math.random() > 0.67 ? productFactory() : packageFactory()));
 
-    return randomNumber > 0.67
-      ? packageFactory()
-      : randomNumber > 0.33 ? productFactory() : optionFactory();
-  });
-
-const otherListItems = [optionFactory(), packageFactory(), productFactory()];
+const otherListItems = [optionFactory(), productFactory()];
 
 const App = () => (
   <div>
