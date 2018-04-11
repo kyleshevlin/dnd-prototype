@@ -21,24 +21,44 @@ class MainList extends Component {
     });
   }
 
-  moveItem(dragIndex, hoverIndex) {
+  moveItem(dragIndex, hoverIndex, parent) {
     const { items } = this.state;
-    const dragItem = items[dragIndex];
-    const hoverItem = items[hoverIndex];
 
-    this.setState({
-      items: items.map((item, index) => {
+    const dragItem = xs => xs[dragIndex];
+    const hoverItem = xs => xs[hoverIndex];
+
+    const swap = xs =>
+      xs.map((item, index) => {
         switch (index) {
           case dragIndex:
-            return hoverItem;
+            return hoverItem(xs);
 
           case hoverIndex:
-            return dragItem;
+            return dragItem(xs);
 
           default:
             return item;
         }
-      })
+      });
+
+    if (parent === 'root') {
+      this.setState({
+        items: swap(items)
+      });
+
+      return;
+    }
+
+    const pkgIndex = items.findIndex(x => x.id === parent);
+    const pkg = items.find(x => x.id === parent);
+    const updatedPkg = Object.assign({}, pkg, { items: swap(pkg.items) });
+
+    this.setState({
+      items: [
+        ...items.slice(0, pkgIndex),
+        updatedPkg,
+        ...items.slice(pkgIndex + 1)
+      ]
     });
   }
 

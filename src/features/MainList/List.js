@@ -5,7 +5,7 @@ import { DTypes } from '../../constants';
 import Option from './Option';
 import Package from './Package';
 import Product from './Product';
-import { sharedHover } from './sharedDnd';
+import SortableItem from '../../shared/SortableItem';
 
 const getItemComponent = item => {
   switch (item.type) {
@@ -33,13 +33,11 @@ const target = {
     const wasDroppedOnChild = monitor.didDrop();
 
     if (isAcceptable && !isIncluded && !wasDroppedOnChild) {
-      props.addItem(item);
+      // props.addItem(item);
     }
   },
 
-  hover(props, monitor) {
-    sharedHover(props, monitor);
-  }
+  hover(props, monitor) {}
 };
 
 const collect = (connect, monitor) => ({
@@ -71,14 +69,24 @@ class List extends Component {
           const Comp = getItemComponent(item);
 
           return (
-            <Comp
+            <SortableItem
               key={item.id}
               index={index}
               moveItem={moveItem}
               parent="root"
-              removeItem={removeItem}
-              {...item}
-            />
+            >
+              {({ isDragging, isOverCurrent }) => (
+                <Comp
+                  index={index}
+                  isDragging={isDragging}
+                  isOverCurrent={isOverCurrent}
+                  moveItem={moveItem}
+                  parent="root"
+                  removeItem={removeItem}
+                  {...item}
+                />
+              )}
+            </SortableItem>
           );
         })}
       </div>

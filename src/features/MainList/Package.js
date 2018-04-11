@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DragSource, DropTarget } from 'react-dnd';
-import { sharedHover } from './sharedDnd';
 import { DTypes } from '../../constants';
-import { pipe } from '../../utils';
 import Option from './Option';
 import Product from './Product';
+import SortableItem from '../../shared/SortableItem';
 
 const getItemComponent = item => {
   switch (item.type) {
@@ -20,41 +18,6 @@ const getItemComponent = item => {
   }
 };
 
-const source = {
-  beginDrag(props) {
-    return {
-      id: props.id,
-      index: props.index,
-      items: props.items,
-      name: props.name,
-      parent: props.parent,
-      type: props.type
-    };
-  }
-};
-
-const sourceCollect = (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-});
-
-const target = {
-  drop(props, monitor) {
-    console.log(props.id);
-    console.log(monitor.getItem());
-  },
-
-  hover(props, monitor) {
-    sharedHover(props, monitor);
-  }
-};
-
-const targetCollect = (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
-  isOverCurrent: monitor.isOver({ shallow: true })
-});
-
 class Package extends Component {
   constructor() {
     super();
@@ -64,11 +27,8 @@ class Package extends Component {
 
   render() {
     const {
-      connectDragSource,
-      connectDropTarget,
       id,
       isDragging,
-      isOver,
       isOverCurrent,
       items,
       moveItem,
@@ -76,15 +36,13 @@ class Package extends Component {
       name
     } = this.props;
 
-    const enhance = pipe(connectDropTarget, connectDragSource);
-
-    return enhance(
+    return (
       <div
         style={{
           backgroundColor: isOverCurrent ? 'rgba(0, 255, 0, 0.2)' : '#eee',
           cursor: 'move',
           margin: '.75em',
-          opacity: isDragging ? 0.5 : 1,
+          opacity: isDragging ? 0 : 1,
           padding: '1em'
         }}
       >
@@ -108,26 +66,33 @@ class Package extends Component {
       const Comp = getItemComponent(item);
 
       return (
-        <Comp
-          index={index}
+        <SortableItem
           key={item.id}
+          index={index}
           moveItem={moveItem}
           parent={id}
-          removeItem={removeItem}
-          {...item}
-        />
+        >
+          {({ isDragging, isOverCurrent }) => (
+            <Comp
+              index={index}
+              isDragging={isDragging}
+              isOverCurrent={isOverCurrent}
+              moveItem={moveItem}
+              parent={id}
+              removeItem={removeItem}
+              {...item}
+            />
+          )}
+        </SortableItem>
       );
     });
   }
 }
 
 Package.propTypes = {
-  connectDragSource: PropTypes.func.isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   isDragging: PropTypes.bool.isRequired,
-  isOver: PropTypes.bool.isRequired,
   isOverCurrent: PropTypes.bool.isRequired,
   moveItem: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
@@ -136,13 +101,4 @@ Package.propTypes = {
   type: PropTypes.string.isRequired
 };
 
-const enhance = pipe(
-  DragSource(DTypes.PACKAGE, source, sourceCollect),
-  DropTarget(
-    [DTypes.OPTION, DTypes.PRODUCT, DTypes.SIDELIST_ITEM],
-    target,
-    targetCollect
-  )
-);
-
-export default enhance(Package);
+export default Package;

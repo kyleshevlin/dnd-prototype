@@ -15,7 +15,7 @@ export const optionFactory = () => ({
 });
 
 const itemsGenerator = () =>
-  Array(Math.ceil(Math.random() * 6))
+  Array(3)
     .fill()
     .map(() => (Math.random() > 0.5 ? productFactory() : optionFactory()));
 

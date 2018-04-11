@@ -5,7 +5,7 @@ import MainList from './features/MainList';
 import OtherList from './features/OtherList';
 import { optionFactory, packageFactory, productFactory } from './factories';
 
-const items = Array(Math.ceil(Math.random() * 6))
+const items = Array(4)
   .fill()
   .map(() => (Math.random() > 0.67 ? productFactory() : packageFactory()));
 
