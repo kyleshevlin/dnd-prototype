@@ -11,7 +11,7 @@ class Product extends Component {
           border: isOverCurrent ? '1px solid red' : '1px solid black',
           cursor: 'move',
           margin: '.75em',
-          opacity: isDragging ? 0 : 1,
+          opacity: isDragging ? 0.25 : 1,
           padding: '1em'
         }}
       >

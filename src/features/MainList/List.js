@@ -24,7 +24,7 @@ const getItemComponent = item => {
 };
 
 const target = {
-  drop(props, monitor, component) {
+  canDrop(props, monitor) {
     const acceptableTypes = [DTypes.OPTION, DTypes.PRODUCT];
     const item = monitor.getItem();
 
@@ -32,15 +32,18 @@ const target = {
     const isIncluded = props.items.map(x => x.id).includes(item.id);
     const wasDroppedOnChild = monitor.didDrop();
 
-    if (isAcceptable && !isIncluded && !wasDroppedOnChild) {
-      // props.addItem(item);
-    }
+    return isAcceptable && !isIncluded && !wasDroppedOnChild;
+  },
+
+  drop(props, monitor) {
+    props.addItem(monitor.getItem());
   },
 
   hover(props, monitor) {}
 };
 
 const collect = (connect, monitor) => ({
+  canDrop: monitor.canDrop(),
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
   isOverCurrent: monitor.isOver({ shallow: true })
@@ -49,6 +52,7 @@ const collect = (connect, monitor) => ({
 class List extends Component {
   render() {
     const {
+      canDrop,
       connectDropTarget,
       isOver,
       isOverCurrent,
@@ -60,7 +64,8 @@ class List extends Component {
     return connectDropTarget(
       <div
         style={{
-          backgroundColor: isOverCurrent ? 'rgba(0, 255, 255, 0.2)' : 'white',
+          backgroundColor:
+            canDrop && isOverCurrent ? 'rgba(0, 255, 255, 0.2)' : 'white',
           width: '50%'
         }}
       >
@@ -96,6 +101,7 @@ class List extends Component {
 
 List.propTypes = {
   addItem: PropTypes.func.isRequired,
+  canDrop: PropTypes.bool.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
   isOverCurrent: PropTypes.bool.isRequired,
@@ -105,7 +111,7 @@ List.propTypes = {
 };
 
 export default DropTarget(
-  [DTypes.OPTION, DTypes.PACKAGE, DTypes.PRODUCT, DTypes.SIDELIST_ITEM],
+  [DTypes.OPTION, DTypes.PRODUCT, DTypes.SIDELIST_ITEM],
   target,
   collect
 )(List);

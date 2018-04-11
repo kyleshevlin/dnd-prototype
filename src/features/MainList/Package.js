@@ -42,7 +42,7 @@ class Package extends Component {
           backgroundColor: isOverCurrent ? 'rgba(0, 255, 0, 0.2)' : '#eee',
           cursor: 'move',
           margin: '.75em',
-          opacity: isDragging ? 0 : 1,
+          opacity: isDragging ? 0.25 : 1,
           padding: '1em'
         }}
       >
